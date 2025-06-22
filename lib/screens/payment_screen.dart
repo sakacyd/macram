@@ -5,6 +5,8 @@ import 'package:macram/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:macram/providers/cart_provider.dart';
 import 'package:macram/config/supabase_config.dart';
+import 'package:macram/models/order.dart';
+import 'package:macram/services/order_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String name;
@@ -12,6 +14,7 @@ class PaymentScreen extends StatefulWidget {
   final String phone;
   final String paymentMethod;
   final double total;
+  final List cartItems; // Tambahkan ini
 
   const PaymentScreen({
     Key? key,
@@ -20,6 +23,7 @@ class PaymentScreen extends StatefulWidget {
     required this.phone,
     required this.paymentMethod,
     required this.total,
+    required this.cartItems, // Tambahkan ini
   }) : super(key: key);
 
   @override
@@ -31,24 +35,37 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> _saveOrderToSupabase() async {
     try {
-      final cartProvider = Provider.of<CartProvider>(context, listen: false);
-      final items = cartProvider.items.map((item) => {
+      // Ubah: mapping cartItems ke OrderItem
+      final items = widget.cartItems.map((item) => {
         'product_name': item.product.name,
         'quantity': item.quantity,
         'flavor': item.flavor,
         'price': item.product.price,
       }).toList();
-
-      await SupabaseConfig.client.from('orders').insert({
-        'customer_name': widget.name,
-        'address': widget.address,
-        'phone': widget.phone,
-        'items': items,
-        'total_amount': widget.total,
-        'payment_method': widget.paymentMethod,
-        'status': 'pending',
-        'created_at': DateTime.now().toIso8601String(),
-      });
+      // Buat id unik
+      final orderId = DateTime.now().millisecondsSinceEpoch.toString();
+      final order = Order(
+        id: orderId,
+        customerName: widget.name,
+        address: widget.address,
+        phone: widget.phone,
+        items: widget.cartItems.map((item) => OrderItem(
+          productName: item.product.name,
+          quantity: item.quantity,
+          flavor: item.flavor,
+          price: item.product.price,
+        )).toList(),
+        totalAmount: widget.total,
+        paymentMethod: widget.paymentMethod,
+        status: 'pending',
+        createdAt: DateTime.now(),
+      );
+      final result = await OrderService.insertOrder(order);
+      if (!result && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Gagal menyimpan pesanan ke database')),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

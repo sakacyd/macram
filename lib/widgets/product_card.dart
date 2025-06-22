@@ -80,14 +80,15 @@ class ProductCard extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProductDetailScreen(product: product),
+                              builder: (context) =>
+                                  ProductDetailScreen(product: product),
                             ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
-                        child: const Text('Tambahkan ke Keranjang'),
+                        child: const Text('Tambah ke Keranjang'),
                       ),
                     ),
                   ],

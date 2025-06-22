@@ -5,7 +5,6 @@ class OrderService {
   static Future<bool> insertOrder(Order order) async {
     try {
       final response = await SupabaseConfig.client.from('orders').insert({
-        'id': order.id,
         'customer_name': order.customerName,
         'address': order.address,
         'phone': order.phone,
