@@ -21,25 +21,33 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   final List<Map<String, dynamic>> paymentMethods = [
     {
       'name': 'BCA',
-      'logo': 'assets/images/iconBCA.png', // Ganti dengan URL logo BCA
-      'type': 'bank',
+      'logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png',
+      'type': 'bank'
     },
-    {'name': 'BRI', 'logo': 'assets/images/iconBRI.png', 'type': 'bank'},
-    {'name': 'BNI', 'logo': 'assets/images/iconBNI.png', 'type': 'bank'},
+    {
+      'name': 'BRI',
+      'logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/BANK_BRI_logo.svg/2560px-BANK_BRI_logo.svg.png',
+      'type': 'bank'
+    },
+    {
+      'name': 'BNI',
+      'logo': 'https://upload.wikimedia.org/wikipedia/id/thumb/5/55/BNI_logo.svg/2560px-BNI_logo.svg.png',
+      'type': 'bank'
+    },
     {
       'name': 'Mandiri',
-      'logo': 'assets/images/iconMandiri.png',
-      'type': 'bank',
+      'logo': 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Bank_Mandiri_logo_2016.svg/2560px-Bank_Mandiri_logo_2016.svg.png',
+      'type': 'bank'
     },
     {
       'name': 'E-Wallet',
-      'logo': 'assets/images/iconDANA.png',
-      'type': 'ewallet',
+      'logo': 'https://cdn-icons-png.flaticon.com/512/4019/4019687.png',
+      'type': 'ewallet'
     },
     {
       'name': 'COD',
       'logo': 'https://cdn-icons-png.flaticon.com/512/1554/1554401.png',
-      'type': 'cod',
+      'type': 'cod'
     },
   ];
 
@@ -57,7 +65,9 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
     final cart = context.watch<CartProvider>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Pembayaran')),
+      appBar: AppBar(
+        title: const Text('Detail Pembayaran'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -120,27 +130,25 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 16),
-                ...paymentMethods.map(
-                  (method) => RadioListTile(
-                    title: Row(
-                      children: [
-                        method['logo'].toString().startsWith('http')
-                            ? Image.network(method['logo'], height: 30)
-                            : Image.asset(method['logo'], height: 30),
-
-                        const SizedBox(width: 8),
-                        Text(method['name']),
-                      ],
-                    ),
-                    value: method['name'],
-                    groupValue: selectedPaymentMethod,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedPaymentMethod = value as String;
-                      });
-                    },
+                ...paymentMethods.map((method) => RadioListTile(
+                  title: Row(
+                    children: [
+                      Image.network(
+                        method['logo'],
+                        height: 30,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(method['name']),
+                    ],
                   ),
-                ),
+                  value: method['name'],
+                  groupValue: selectedPaymentMethod,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPaymentMethod = value as String;
+                    });
+                  },
+                )),
                 const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -166,30 +174,26 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: selectedPaymentMethod == null
-                        ? null
-                        : () {
-                            if (_formKey.currentState!.validate()) {
-                              final cartItems = List.from(
-                                cart.items,
-                              ); // Ambil cart items
-                              final total = cart.total;
-                              cart.clearCart();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => PaymentScreen(
-                                    name: _nameController.text,
-                                    address: _addressController.text,
-                                    phone: _phoneController.text,
-                                    paymentMethod: selectedPaymentMethod!,
-                                    total: total,
-                                    cartItems: cartItems, // Kirim cart items
-                                  ),
-                                ),
-                              );
-                            }
-                          },
+                    onPressed: selectedPaymentMethod == null ? null : () {
+                      if (_formKey.currentState!.validate()) {
+                        final cartItems = List.from(cart.items); // Ambil cart items
+                        final total = cart.total;
+                        cart.clearCart();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PaymentScreen(
+                              name: _nameController.text,
+                              address: _addressController.text,
+                              phone: _phoneController.text,
+                              paymentMethod: selectedPaymentMethod!,
+                              total: total,
+                              cartItems: cartItems, // Kirim cart items
+                            ),
+                          ),
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
