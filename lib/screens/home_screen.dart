@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:macram/models/product.dart';
-import 'package:macram/screens/cart_screen.dart';
-import 'package:macram/services/product_service.dart';
-import 'package:macram/widgets/product_card.dart';
-import 'package:provider/provider.dart';
-import 'package:macram/providers/cart_provider.dart';
+import 'package:macram/screens/menu_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,88 +9,119 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('MacRAM'),
+        backgroundColor: const Color(0xFF6750A4),
         actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CartScreen(),
-                    ),
-                  );
-                },
-              ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: Consumer<CartProvider>(
-                  builder: (context, cart, child) {
-                    return cart.items.isEmpty
-                        ? const SizedBox()
-                        : Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: const BoxDecoration(
-                              color: Colors.red,
-                              shape: BoxShape.circle,
-                            ),
-                            constraints: const BoxConstraints(
-                              minWidth: 16,
-                              minHeight: 16,
-                            ),
-                            child: Text(
-                              cart.items.length.toString(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          );
-                  },
-                ),
-              ),
-            ],
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MenuScreen()),
+              );
+            },
+            child: const Text(
+              'Menu',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
-      body: FutureBuilder<List<Product>>(
-        future: ProductService.getProducts(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          }
-
-          final products = snapshot.data ?? [];
-
-          if (products.isEmpty) {
-            return const Center(
-              child: Text('Tidak ada produk tersedia'),
-            );
-          }
-
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Ngeliwet Gak Ada Lawannn!!',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Makaroni RAM',
+                    style: TextStyle(
+                      fontSize: 48,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Renyahnya pas, pedasnya nampol! Makaroni RAM siap jadi teman setia kamu saat nugas, santai, atau nongkrong bareng teman.',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MenuScreen()),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6750A4),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    ),
+                    child: const Text('Pesan Sekarang'),
+                  ),
+                ],
+              ),
             ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              return ProductCard(product: products[index]);
-            },
-          );
-        },
+            Image.asset(
+              'assets/images/ilustration.png',
+              height: 300,
+              fit: BoxFit.contain,
+            ),
+            Container(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                children: [
+                  const Text(
+                    'Ikuti Kami',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Image.network(
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Image.network(
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Image.network(
+                          'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/2491px-Logo_of_Twitter.svg.png',
+                          width: 24,
+                          height: 24,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

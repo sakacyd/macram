@@ -20,12 +20,18 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'MacRAM',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          scaffoldBackgroundColor: Colors.grey[50],
+          primarySwatch: Colors.deepPurple,
+          scaffoldBackgroundColor: Colors.white,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.blue,
+            backgroundColor: Color(0xFF6750A4),
             foregroundColor: Colors.white,
             elevation: 0,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF6750A4),
+              foregroundColor: Colors.white,
+            ),
           ),
         ),
         home: const HomeScreen(),
