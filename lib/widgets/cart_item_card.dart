@@ -42,6 +42,14 @@ class CartItemCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
+                    'Rasa: ${item.flavor}',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
                     formatter.format(item.product.price),
                     style: const TextStyle(
                       fontSize: 14,
@@ -56,7 +64,7 @@ class CartItemCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: () {
-                    context.read<CartProvider>().removeItem(item.product);
+                    context.read<CartProvider>().removeItem(item);
                   },
                 ),
                 Text(
@@ -66,7 +74,12 @@ class CartItemCard extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () {
-                    context.read<CartProvider>().addItem(item.product);
+                    final newItem = CartItem(
+                      product: item.product,
+                      quantity: 1,
+                      flavor: item.flavor,
+                    );
+                    context.read<CartProvider>().addItem(newItem);
                   },
                 ),
               ],

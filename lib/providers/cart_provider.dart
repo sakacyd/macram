@@ -12,30 +12,27 @@ class CartProvider extends ChangeNotifier {
         (sum, item) => sum + item.total,
       );
 
-  void addItem(Product product) {
-    final existingIndex = _items.indexWhere(
-      (item) => item.product.id == product.id,
+  void addItem(CartItem newItem) {
+    final index = items.indexWhere(
+      (item) => item.product.id == newItem.product.id && item.flavor == newItem.flavor
     );
-
-    if (existingIndex >= 0) {
-      _items[existingIndex].quantity++;
+    if (index >= 0) {
+      items[index].quantity += newItem.quantity;
     } else {
-      _items.add(CartItem(product: product));
+      items.add(newItem);
     }
-
     notifyListeners();
   }
 
-  void removeItem(Product product) {
-    final existingIndex = _items.indexWhere(
-      (item) => item.product.id == product.id,
+  void removeItem(CartItem cartItem) {
+    final index = items.indexWhere(
+      (item) => item.product.id == cartItem.product.id && item.flavor == cartItem.flavor
     );
-
-    if (existingIndex >= 0) {
-      if (_items[existingIndex].quantity > 1) {
-        _items[existingIndex].quantity--;
+    if (index >= 0) {
+      if (items[index].quantity > 1) {
+        items[index].quantity--;
       } else {
-        _items.removeAt(existingIndex);
+        items.removeAt(index);
       }
       notifyListeners();
     }
