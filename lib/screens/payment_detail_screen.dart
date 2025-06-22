@@ -176,6 +176,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
                   child: ElevatedButton(
                     onPressed: selectedPaymentMethod == null ? null : () {
                       if (_formKey.currentState!.validate()) {
+                        cart.clearCart();
                         Navigator.push(
                           context,
                           MaterialPageRoute(

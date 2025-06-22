@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:macram/screens/home_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:macram/providers/cart_provider.dart';
+import 'package:macram/config/supabase_config.dart';
 
 class PaymentScreen extends StatefulWidget {
   final String name;
@@ -26,11 +29,41 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   String? virtualAccount;
 
+  Future<void> _saveOrderToSupabase() async {
+    try {
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      final items = cartProvider.items.map((item) => {
+        'product_name': item.product.name,
+        'quantity': item.quantity,
+        'flavor': item.flavor,
+        'price': item.product.price,
+      }).toList();
+
+      await SupabaseConfig.client.from('orders').insert({
+        'customer_name': widget.name,
+        'address': widget.address,
+        'phone': widget.phone,
+        'items': items,
+        'total_amount': widget.total,
+        'payment_method': widget.paymentMethod,
+        'status': 'pending',
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}'))
+        );
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _saveOrderToSupabase();
+    
     if (widget.paymentMethod != 'COD') {
-      // Generate random VA number for demo
       virtualAccount = '${widget.paymentMethod}${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
       Future.delayed(const Duration(seconds: 10), () {
         if (mounted) {
