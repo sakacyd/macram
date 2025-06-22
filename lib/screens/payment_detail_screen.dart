@@ -21,7 +21,7 @@ class _PaymentDetailScreenState extends State<PaymentDetailScreen> {
   final List<Map<String, dynamic>> paymentMethods = [
     {
       'name': 'BCA',
-      'logo': 'https://logos-download.com/wp-content/uploads/2016/06/Bank_BCA_logo.png',
+      'logo': 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Bank_Central_Asia.svg/2560px-Bank_Central_Asia.svg.png',
       'type': 'bank'
     },
     {
